@@ -34,7 +34,7 @@ var bb = {
 
 bb.init = function() {
 	
-	var scrollContent = {
+	/*var scrollContent = {
     scroll: function() {
       var self = this
       setTimeout( function() {
@@ -61,7 +61,7 @@ bb.init = function() {
       },1)
     }
 
-  }
+  }*/
 
   bb.model.State = Backbone.Model.extend({    
     defaults: {
@@ -384,7 +384,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     }
   })
   
-  bb.view.List = Backbone.View.extend({ 
+  bb.view.List = Backbone.View.extend(_.extend({ 
   
 
     initialize: function( items ) {
@@ -460,9 +460,9 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     }
 	
 	
-  })
+  }))
   
-  bb.view.ListofLists = Backbone.View.extend({ 
+  bb.view.ListofLists = Backbone.View.extend(_.extend({ 
   
 
     initialize: function( lists, preferences ) {
@@ -527,7 +527,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 	
 	
 	
-  })
+  }))
   
   bb.view.Item = Backbone.View.extend(_.extend({    
   //el: $("#todolist"),
