@@ -460,7 +460,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     }
 	
 	
-  },scrollContent))
+  }))
   
   bb.view.ListofLists = Backbone.View.extend(_.extend({ 
   
@@ -527,7 +527,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 	
 	
 	
-  },scrollListContent))
+  }))
   
   bb.view.Item = Backbone.View.extend(_.extend({    
   //el: $("#todolist"),
