@@ -384,7 +384,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     }
   })
   
-  bb.view.List = Backbone.View.extend(_.extend({ 
+  bb.view.List = Backbone.View.extend({ 
   
 
     initialize: function( items ) {
@@ -460,9 +460,9 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     }
 	
 	
-  }))
+  })
   
-  bb.view.ListofLists = Backbone.View.extend(_.extend({ 
+  bb.view.ListofLists = Backbone.View.extend({ 
   
 
     initialize: function( lists, preferences ) {
@@ -527,7 +527,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 	
 	
 	
-  }))
+  })
   
   bb.view.Item = Backbone.View.extend(_.extend({    
   //el: $("#todolist"),
