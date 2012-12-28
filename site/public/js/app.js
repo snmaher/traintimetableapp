@@ -493,7 +493,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     render: function() {
       var self = this
 	  var title = new bb.model.List({
-        listtext: "Stations", heading : true
+        listtext: "Stations", swipeon : true
       })
       self.$el.empty()
 	   var listv = new bb.view.Listitem({
