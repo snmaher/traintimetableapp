@@ -412,6 +412,16 @@ bb.model.Item = Backbone.Model.extend(_.extend({
       var self = this
      
       self.$el.empty()
+	  
+	  var title = new bb.model.Item({
+        destination: "Destination", route: "Route", time: "Time", swipeon : true
+      })
+      self.$el.empty()
+	   var listv = new bb.view.Item({
+        model: title
+      })
+
+      self.$el.append( listv.$el ) 
 
       self.items.each(function(item){
 		  
@@ -540,9 +550,9 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   //el: $("#todolist"),
  
   events: {
-     'tap': 'toggledone',
-	 'tap #delete_tm' : 'deleteitem',
-	 'swipe' : 'showdelete'
+     //'tap': 'toggledone',
+	 //'tap #delete_tm' : 'deleteitem',
+	 //'swipe' : 'showdelete'
   },
 	
 	toggledone: function() {
