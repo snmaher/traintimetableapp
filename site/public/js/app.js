@@ -625,12 +625,14 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 	
 	changelist: function() {
 		var self = this
+		if(self.model.get('listtext') != 'Stations')
+		{
 		app.model.state.set({currentlist: self.model.get('id')})
-	
+		
 	  //app.view.head.cancelselected()
 	  app.view.todolist.render()
 	  app.model.state.set({current:"capture"})
-		
+		}
 	
 	}
 	
