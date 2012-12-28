@@ -492,10 +492,12 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 
     render: function() {
       var self = this
-
+	  var title = new bb.model.List({
+        listtext: "Stations"
+      })
       self.$el.empty()
 	   var listv = new bb.view.Listitem({
-        "listtext":"Stations", "id":"1234567890"
+        model: title
       })
 
       self.$el.append( listv.$el ) 
