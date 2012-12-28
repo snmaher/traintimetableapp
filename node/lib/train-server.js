@@ -66,7 +66,7 @@ function init() {
 
   api.connect(
     {
-      name:   'lab08',
+      name:   'todo',
       server: '127.0.0.1',
       port:   27017,
 	  
