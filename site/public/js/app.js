@@ -597,8 +597,8 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   
   events: {
     
-	 'tap #delete_tm' : 'deleteitem',
-	 'swipe' : 'showdelete',
+	 //'tap #delete_tm' : 'deleteitem',
+	// 'swipe' : 'showdelete',
 	 'tap' : 'changelist'
   },
 	
