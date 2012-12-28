@@ -494,7 +494,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
       var self = this
 
       self.$el.empty()
-	  self.appendlist({"listtext" : "Stations"})
+	  self.appendlist({listtext : "Stations", swipeon : false, id : "12345"})
       self.lists.each(function(list){
         self.appendlist(list)
       })
