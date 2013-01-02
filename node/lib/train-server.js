@@ -58,6 +58,10 @@ function init() {
     app.get('/api/rest/list',     api.rest.listlists)
     app.put('/api/rest/list/:id', api.rest.updatelist)
     app.del('/api/rest/list/:id', api.rest.dellist)
+	
+	app.post('/api/rest/photo',    api.rest.createphoto)
+    app.get('/api/rest/list',     api.rest.listphotos)
+    
   })
   server.use(router)
 

@@ -9,7 +9,7 @@ var mongodb = common.mongodb
 
 var todocoll = null
 var listcoll = null
-//var stationcoll = null
+var photocoll = null
 
 var util = {}
 
@@ -101,6 +101,25 @@ createlist: function( req, res ) {
     }))
   },
   
+  createphoto: function( req, res ) {
+    var input = req.body
+    
+    if( !util.validatelist(input) ) {
+      return res.send$(400, 'qinvalid')
+    }
+
+    var photo = {
+      filename: input.filename, station: input.station
+      
+    }
+
+    photocoll.save(photo, res.err$(function( docs ){
+     var output = util.fixid( docs[0] )
+	
+     res.sendjson$( output )
+    }))
+  },
+  
 
   read: function( req, res ) {
     var input = req.params
@@ -151,6 +170,24 @@ createlist: function( req, res ) {
         output = docs
         output.forEach(function(item){
           util.fixid(item)
+        })
+        res.sendjson$( output )
+      }))
+    }))
+  },
+  
+  listphotos: function( req, res ) {
+    var input = req.query
+    var output = []
+
+    var query   = {}
+    var options = {sort:[['created','desc']]}
+
+    photocoll.find( query, options, res.err$( function( cursor ) {
+      cursor.toArray( res.err$( function( docs ) {
+        output = docs
+        output.forEach(function(photo){
+          util.fixid(photo)
         })
         res.sendjson$( output )
       }))
@@ -327,17 +364,17 @@ exports.connect = function(options,callback) {
 	
 	
 	)
-	/*
-	client.collection( 'stations', function( err, collection ) {
+	
+	client.collection( 'photo', function( err, collection ) {
       if( err ) return callback(err);
 
-      stationcoll = collection
+      photocoll = collection
       callback()
     }
 	
 	
 	)
-	*/
+	
 	
 	
   })
