@@ -108,9 +108,9 @@ createlist: function( req, res ) {
   createphoto: function( req, res ) {
     var input = req.body
     
-    if( !util.validatephoto(input) ) {
-      return res.send$(401, 'qinvalid')
-    }
+   // if( !util.validatephoto(input) ) {
+    //  return res.send$(401, 'qinvalid')
+    //}
 
     var photo = {
       filename: input.filename, station: input.station
