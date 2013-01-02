@@ -21,6 +21,10 @@ util.validatelist = function( input ) {
   return input.listtext
 }
 
+util.validatephoto = function( input ) {
+  return input.filename
+}
+
 util.fixid = function( doc ) {
   if( doc._id ) {
     doc.id = doc._id.toString()
@@ -104,7 +108,7 @@ createlist: function( req, res ) {
   createphoto: function( req, res ) {
     var input = req.body
     
-    if( !util.validatelist(input) ) {
+    if( !util.validatephoto(input) ) {
       return res.send$(400, 'qinvalid')
     }
 

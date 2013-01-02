@@ -60,7 +60,7 @@ function init() {
     app.del('/api/rest/list/:id', api.rest.dellist)
 	
 	app.post('/api/rest/photo',    api.rest.createphoto)
-    app.get('/api/rest/list',     api.rest.listphotos)
+    app.get('/api/rest/photo',     api.rest.listphotos)
     
   })
   server.use(router)
