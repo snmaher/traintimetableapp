@@ -22,7 +22,7 @@ util.validatelist = function( input ) {
 }
 
 util.validatephoto = function( input ) {
-  return input.filename
+  return input.station
 }
 
 util.fixid = function( doc ) {
