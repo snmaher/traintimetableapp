@@ -109,7 +109,7 @@ createlist: function( req, res ) {
     var input = req.body
     
     if( !util.validatephoto(input) ) {
-      return res.send$(400, 'qinvalid')
+      return res.send$(401, 'qinvalid')
     }
 
     var photo = {
