@@ -108,9 +108,9 @@ createlist: function( req, res ) {
   createphoto: function( req, res ) {
     var input = req.body
     
-   // if( !util.validatephoto(input) ) {
-    //  return res.send$(401, 'qinvalid')
-    //}
+    if( !util.validatephoto(input) ) {
+      return res.send$(401, 'qinvalid')
+    }
 
     var photo = {
       filename: input.filename, station: input.station
@@ -190,8 +190,8 @@ createlist: function( req, res ) {
     photocoll.find( query, options, res.err$( function( cursor ) {
       cursor.toArray( res.err$( function( docs ) {
         output = docs
-        output.forEach(function(photo){
-          util.fixid(photo)
+        output.forEach(function(item){
+          util.fixid(item)
         })
         res.sendjson$( output )
       }))
