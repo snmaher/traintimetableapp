@@ -1,6 +1,7 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
+  
   <title>PhoneGap</title> 
   <meta name="viewport" content="user-scalable=no,initial-scale=1.0,maximum-scale=1.0" />
 
@@ -16,14 +17,147 @@
   <link rel="stylesheet" href="css/ios/style.css" />
   <link rel="stylesheet" href="css/app.css" />
 
-  <script src="js/phonegap.js"></script>
+ <!-- <script src="js/phonegap.js"></script>-->
   <script src="js/jquery.js"></script>
   <script src="js/jquery.mobile.js"></script>
   <script src="js/underscore.js"></script>
   <script src="js/backbone.js"></script>
   <script src="js/iscroll.js"></script>
   <script src="js/app.js"></script>
-  
+  <script type="text/javascript" charset="utf-8" src="cordova-2.2.0.js"></script>
+  <script type="text/javascript" charset="utf-8">
+
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value 
+	var img;
+	
+
+    // Wait for PhoneGap to connect with the device
+    //
+    document.addEventListener("deviceready",onDeviceReady,false);
+
+    // PhoneGap is ready to be used!
+    //
+    function onDeviceReady() {
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoDataSuccess(imageData) {
+      // Uncomment to view the base64 encoded image data
+      // console.log(imageData);
+
+      // Get image handle
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Unhide image elements
+      //
+      largeImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
+      largeImage.src = imageData;//"data:image/jpeg;base64," + 
+      imageURI = imageData;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoURISuccess(imageURI) {
+      // Uncomment to view the image file URI 
+      // console.log(imageURI);
+
+      // Get image handle
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Unhide image elements
+      //
+      largeImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
+      largeImage.src = imageURI;
+	 
+        img = imageURI;
+    }
+
+    // A button will call this function
+    //
+    function capturePhoto() {
+      // Take picture using device camera and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20,  encodingType: Camera.EncodingType.JPEG, correctOrientation: true, targetHeight: 300});
+    }
+
+    // A button will call this function
+    //
+    function capturePhotoEdit() {
+      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true }); 
+    }
+
+    // A button will call this function
+    //
+    function getPhoto() {
+      // Retrieve image file location from specified source
+      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 20,  encodingType: Camera.EncodingType.JPEG, correctOrientation: true, targetHeight: 300 });
+    }
+
+    // Called if something bad happens.
+    // 
+    function onFail(message) {
+      alert('Failed because: ' + message);
+    }
+    
+    function uploadToS3()
+	{
+		
+		
+		var options = new FileUploadOptions();
+		//options.fileKey="fileupload";
+		var time = new Date().getTime();
+		//var userId = getUserId(); // In my case, Parse.User.current().id;
+		fileName = time+".jpg";
+		options.fileName = fileName;
+		options.mimeType ="image/jpeg";
+		options.chunkedMode = false;
+ 
+		var uri = encodeURI("https://traintimetable.s3.amazonaws.com/");
+ 
+		var policyDoc = "eyJleHBpcmF0aW9uIjogIjIwMTQtMDEtMDFUMDA6MDA6MDBaIiwNCiAgImNvbmRpdGlvbnMiOiBbIA0KICAgIHsiYnVja2V0IjogInRyYWludGltZXRhYmxlIn0sIA0KICAgIFsic3RhcnRzLXdpdGgiLCAiJGtleSIsICJ1cGxvYWRzLyJdLA0KICAgIHsiYWNsIjogInB1YmxpYy1yZWFkIn0sDQogICAgWyJzdGFydHMtd2l0aCIsICIkQ29udGVudC1UeXBlIiwgIiJdLA0KICAgIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDQ4NTc2XQ0KICBdDQp9";
+		var signature = "Kec/DBNUkbgjQ6iDi92x0xXUKQg=";
+		var params = {
+  		"key": "uploads/"+fileName,
+  		"AWSAccessKeyId": "AKIAILOJZNPMIVZU2DKQ",
+  		"acl": "public-read",
+  		"policy": policyDoc,
+  		"signature": signature,
+  		"Content-Type": "image/jpeg"
+		};
+		options.params = params;
+ 
+		var ft = new FileTransfer();
+		ft.upload(img, uri, uploadSuccess, uploadFail, options);
+	}
+	function uploadSuccess()
+	{
+		document.getElementById('uploaded').innerHTML="Image has been uploaded";
+		app.model.photos.addphoto(fileName);
+	}
+	function uploadFail()
+	{
+		document.getElementById('uploaded').innerHTML="Upload has failed";
+	}
+	function upload(URI)
+	{
+		document.getElementById('uploaded').innerHTML=URI;
+	}
+
+    </script>
 </head> 
 <body> 
 
@@ -31,15 +165,14 @@
 
   <div id="header" data-role="header">
     <h1>Irish Rail Timetable</h1>
- 	<a id="header_login"  href="#auth" data-role="button" class="ui-btn-right" style="font-size:0.9em">login</a>    
-    <a id="header_logout" href="/logout" rel="external" data-role="button" class="ui-btn-right" style="font-size:0.9em">logout</a>  
   </div>
 
   <div id="content" data-role="content">	
+    
     <div id="content_sense" class="content scroller">
       <div class="content-area">
 
-       
+      
         
         <div id="listcontent" data-role="content">	
      
@@ -55,53 +188,17 @@
   </div>
 
 
-        <!--
-        <div data-role="controlgroup">
-          <a id="sense_accel_watch" data-role="button" data-inline="true">Watch</a>
-          <a id="sense_accel_stop"  data-role="button" data-inline="true">Stop</a>
-        </div>
-
-        <div class="ui-grid-a">
-	  <div class="ui-block-a">X: <span id="sense_accel_x_val"></span></div>
-	  <div class="ui-block-b"><div id="sense_accel_x" class="charthbar"></div></div>
-	  <div class="ui-block-a">Y: <span id="sense_accel_y_val"></span></div>
-	  <div class="ui-block-b"><div id="sense_accel_y" class="charthbar"></div></div>
-	  <div class="ui-block-a">Z: <span id="sense_accel_z_val"></span></div>
-	  <div class="ui-block-b"><div id="sense_accel_z" class="charthbar"></div></div>
-        </div>
-
-        <h3>Button</h3>
-        <p id="sense_button"></p>
-        -->
+ 
       </div>
     </div>
 
     <div id="content_capture" class="content scroller">
-      <div class="content-area">
-        <!--<h3>Search For Station</h3>-->
-        <!--<table id="search">
-        	<tr>
-            <td><input type="text" id="searchstation" placeholder="Search For Station"/></td>
-       		<td><a id="searchStationBut" data-role="button" data-inline="true" data-icon='plus' class="ui-btn-right">Go</a></td>
-            </tr>
-        </table>
-        
-        <a id="capture_image" data-role="button">Image</a>
-        <a id="capture_video" data-role="button">Video</a>
-        <a id="capture_audio" data-role="button">Audio</a>-->
-        <!--<h3>Search For Route</h3>-->
-       <!-- <table id="search2">
-        	<tr>
-            <td><input type="text" id="searchroute" placeholder="Search by route No." data-inline="true"/></td>
-       		<td><a id="searchRouteBut" data-role="button" data-inline="true" data-icon='plus' class="ui-btn-right">Go</a></td>
-            </tr>
-        </table>
-        <img id="capture_image_play" style="width:300px">
-        <a id="capture_video_play" rel="external" style="display:none" data-role="button">Play Video</a>
-        <a id="capture_audio_play" rel="external" style="display:none" data-role="button">Play Audio</a>-->
-        
-       <!-- <div id="timetablecontent" data-role="content">	-->
+    
   
+      <div class="content-area">
+      
+       <h3 id="heading">Services for {{-title}} station</h3>
+       <div id="timetablecontent" data-role="content">
     
     <ul id="todolist" data-role="listview">
       <li class = "eachitem">
@@ -117,45 +214,41 @@
       </li>
     </ul>
      
-<!-- </div>-->
+ </div>
       </div>
     </div>
+    
+    
 
     <div id="content_status" class="content scroller">
       <div class="content-area">
-      <h3>Upload Photos</h3>
+      <div id="photocontent">
+      <h3 id="heading2">Upload Photos for station</h3>
+      
+      <button onclick="getPhoto();">Capture Photo</button> 
+	  
+      <button onclick="uploadToS3()">Upload Photo</button> 
+      <p id="uploaded"></p>
+      <img style="display:none;width:260px;" id="largeImage" src="" />
+      
+   </div>
       </div>
     </div>
 
     <div id="content_storage" class="content scroller">
       <div class="content-area">
-      <h3>Tweet</h3>
-      <div data-role="controlgroup" data-type="horizontal" class="minibuttons">
-      <a id="social_msg_twitter"  data-role="button" data-iconpos="right" class="social_msg twitter_msg ui-corner-right ui-corner-left">tweet</a>
+      <h3 id="heading3">Photos for station</h3><br/>
+      
+      <div id="photolist">
+      
+      
+      <img src="https://s3-eu-west-1.amazonaws.com/traintimetable/uploads/{{filename}}" height ="300"/>
       
     </div>
       </div>
     </div>
 
-    <!--<div id="content_phonegap" class="content scroller">
-      <div class="content-area">
-        <h3>Device Info</h3>
-
-        <div class="ui-grid-a">
-	  <div class="ui-block-a">name:</div>
-	  <div class="ui-block-b"><span id="phonegap_name"></span></div>
-	  <div class="ui-block-a">phonegap:</div>
-	  <div class="ui-block-b"><span id="phonegap_phonegap"></span></div>
-	  <div class="ui-block-a">platform:</div>
-	  <div class="ui-block-b"><span id="phonegap_platform"></span></div>
-	  <div class="ui-block-a">uuid:</div>
-	  <div class="ui-block-b"><span id="phonegap_uuid"></span></div>
-	  <div class="ui-block-a">version:</div>
-	  <div class="ui-block-b"><span id="phonegap_version"></span></div>
-        </div>
-
-      </div>
-    </div>-->
+   
 
   </div>
 
@@ -163,9 +256,9 @@
     <div data-role="navbar" class="ui-navbar">
       <ul id="tabbar" class="ui-grid custom-tabbar">
         <li><a id="tab_sense"    data-icon="custom">Stations</a></li>
-        <li><a id="tab_capture"  data-icon="custom">Services</a></li>
-        <li><a id="tab_status"   data-icon="custom">Photos</a></li>
-        <li><a id="tab_storage"  data-icon="custom">Tweet</a></li>
+        <li><a id="tab_capture"    data-icon="custom">Services</a></li>
+        <li><a id="tab_storage"  data-icon="custom">Photos</a></li>
+        <li><a id="tab_status"  data-icon="custom">Upload</a></li>
         <!--<li><a id="tab_phonegap" data-icon="custom">PhoneGap</a></li>-->
       </ul>
     </div>

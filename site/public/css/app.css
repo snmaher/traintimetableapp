@@ -90,14 +90,14 @@ div.content-area {
 #tab_sense .ui-icon { background-image: url(../img/radar-lo.png) }
 #tab_sense.ui-btn-active .ui-icon { background-image: url(../img/radar-hi.png) }
 
-#tab_capture .ui-icon { background-image: url(../img/camera-lo.png) }
-#tab_capture.ui-btn-active .ui-icon { background-image: url(../img/camera-hi.png) }
+#tab_capture .ui-icon { background-image: url(../img/dashboard-lo.png) }
+#tab_capture.ui-btn-active .ui-icon { background-image: url(../img/dashboard-hi.png) }
 
-#tab_status .ui-icon { background-image: url(../img/dashboard-lo.png) }
-#tab_status.ui-btn-active .ui-icon { background-image: url(../img/dashboard-hi.png) }
+#tab_status .ui-icon { background-image: url(../img/cabinet-lo.png) }
+#tab_status.ui-btn-active .ui-icon { background-image: url(../img/cabinet-hi.png) }
 
-#tab_storage .ui-icon { background-image: url(../img/cabinet-lo.png) }
-#tab_storage.ui-btn-active .ui-icon { background-image: url(../img/cabinet-hi.png) }
+#tab_storage .ui-icon { background-image: url(../img/camera-lo.png) }
+#tab_storage.ui-btn-active .ui-icon { background-image: url(../img/camera-hi.png) }
 
 #tab_phonegap .ui-icon { background-image: url(../img/iphone-lo.png) }
 #tab_phonegap.ui-btn-active .ui-icon { background-image: url(../img/iphone-hi.png) }
@@ -109,14 +109,14 @@ div.content-area {
 #tab_sense .ui-icon { background-image: url(../img/radar-lo@2x.png) }
 #tab_sense.ui-btn-active .ui-icon { background-image: url(../img/radar-hi@2x.png) }
 
-#tab_capture .ui-icon { background-image: url(../img/camera-lo@2x.png) }
-#tab_capture.ui-btn-active .ui-icon { background-image: url(../img/camera-hi@2x.png) }
+#tab_capture .ui-icon { background-image: url(../img/dashboard-lo@2x.png) }
+#tab_capture.ui-btn-active .ui-icon { background-image: url(../img/dashboard-hi@2x.png) }
 
-#tab_status .ui-icon { background-image: url(../img/dashboard-lo@2x.png) }
-#tab_status.ui-btn-active .ui-icon { background-image: url(../img/dashboard-hi@2x.png) }
+#tab_status .ui-icon { background-image: url(../img/cabinet-lo@2x.png) }
+#tab_status.ui-btn-active .ui-icon { background-image: url(../img/cabinet-hi@2x.png) }
 
-#tab_storage .ui-icon { background-image: url(../img/cabinet-lo@2x.png); }
-#tab_storage.ui-btn-active .ui-icon { background-image: url(../img/cabinet-hi@2x.png) }
+#tab_storage .ui-icon { background-image: url(../img/camera-lo@2x.png); }
+#tab_storage.ui-btn-active .ui-icon { background-image: url(../img/camera-hi@2x.png) }
 
 #tab_phonegap .ui-icon { background-image: url(../img/iphone-lo@2x.png) }
 #tab_phonegap.ui-btn-active .ui-icon { background-image: url(../img/iphone-hi@2x.png) }
@@ -134,7 +134,7 @@ div.content-area {
 div #timetablecontent {
     overflow: hidden;
     position: fixed;
-    top: 20px;
+    top: 110px;
     /*bottom: -1px;*/
     left: 0px;
     right: 0px;

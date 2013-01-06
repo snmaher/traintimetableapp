@@ -9,10 +9,9 @@ var app = {
   view: {},
   tabs: {
     sense:    { index:i++, icon:'73-radar', },
-    capture:  { index:i++, icon:'33-cabinet', },
-    storage:  { index:i++, icon:'86-camera', },
-	status:   { index:i++, icon:'81-dashboard', },
-    
+    capture:  { index:i++, icon:'86-camera', },
+    status:   { index:i++, icon:'81-dashboard', },
+    storage:  { index:i++, icon:'33-cabinet', },
     //phonegap: { index:i++, icon:'32-iphone', },
   },
   platform: /Android/.test(navigator.userAgent)?'android':'ios',
@@ -63,21 +62,6 @@ bb.init = function() {
     }
 
   }
-  
-   var scrollPhotoContent = {
-    scroll: function() {
-      var self = this
-      setTimeout( function() {
-        if( self.scroller ) {
-          self.scroller.refresh()
-        }
-        else {
-          self.scroller = new iScroll( $("div[id='photocontent']")[0] )
-        }
-      },1)
-    }
-
-  }
 
   bb.model.State = Backbone.Model.extend({    
     defaults: {
@@ -113,8 +97,6 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     }
 
   }))
-  
-  
   
   bb.model.Items = Backbone.Collection.extend(_.extend({    
     model: bb.model.Item,
@@ -169,6 +151,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   }))
   
   
+    
    bb.model.Lists = Backbone.Collection.extend(_.extend({    
     model: bb.model.List,
    // localStorage: new Store("lists")
@@ -189,46 +172,6 @@ bb.model.Item = Backbone.Model.extend(_.extend({
       })
       self.add(list)
       list.save() 
-    }
-	
-	
-
-  }))
-  
-   bb.model.Photo = Backbone.Model.extend(_.extend({    
-    defaults: {
-      filename: '100.jpg', station: 'Bray', swipeon:true
-    },
-
-    initialize: function() {
-      var self = this
-      _.bindAll(self)
-    }
-	
-	
-
-  }))
-  
-  bb.model.Photos = Backbone.Collection.extend(_.extend({    
-    model: bb.model.Photo,
-   // localStorage: new Store("lists")
-   url: 'http://ec2-79-125-47-67.eu-west-1.compute.amazonaws.com/api/rest/photo'
-	,
-
-    initialize: function() {
-      var self = this
-      _.bindAll(self)
-    
-    },
-
-    addphoto: function(name) {
-      var self = this
-	  var station = app.model.state.get('currentlist')
-      var photo = new bb.model.Photo({
-        filename: name, station: station
-      })
-      self.add(photo)
-      photo.save() 
     }
 	
 	
@@ -269,8 +212,6 @@ bb.model.Item = Backbone.Model.extend(_.extend({
     render: function() {
     }
   })
-  
- 
 
 
   bb.view.Content = Backbone.View.extend({    
@@ -331,13 +272,51 @@ bb.model.Item = Backbone.Model.extend(_.extend({
       _.bindAll(self)
 
       self.elem = {
-        
+        accel_watch_btn: $('#sense_accel_watch'),
+        accel_stop_btn:  $('#sense_accel_stop'),
+        accel_x: $('#sense_accel_x'),
+        accel_y: $('#sense_accel_y'),
+        accel_z: $('#sense_accel_z'),
+        accel_x_val: $('#sense_accel_x_val'),
+        accel_y_val: $('#sense_accel_y_val'),
+        accel_z_val: $('#sense_accel_z_val'),
+
+        button: $('#sense_button')
       }
 
-     
+      self.elem.accel_watch_btn.tap(function(){
+        self.watchID = navigator.accelerometer.watchAcceleration(self.update_accel,app.erroralert,{frequency:10})
+      })
+
+      self.elem.accel_stop_btn.tap(function(){
+        self.watchID && navigator.accelerometer.clearWatch(self.watchID)
+      })
+
+      function call_update_button(name) {
+        return function() { self.update_button(name) }
+      }
+
+      document.addEventListener("backbutton", call_update_button('back'))
+      document.addEventListener("menubutton", call_update_button('menu'))
+      document.addEventListener("searchbutton", call_update_button('search'))
     },
 
     render: function() {
+    },
+
+    update_accel: function(data) {
+      var self = this
+      self.elem.accel_x.css({marginLeft:data.x<0?70+(70*data.x):70, width:Math.abs(70*data.x)})
+      self.elem.accel_y.css({marginLeft:data.y<0?70+(70*data.y):70, width:Math.abs(70*data.y)})
+      self.elem.accel_z.css({marginLeft:data.z<0?70+(70*data.z):70, width:Math.abs(70*data.z)})
+      self.elem.accel_x_val.text(data.x)
+      self.elem.accel_y_val.text(data.y)
+      self.elem.accel_z_val.text(data.z)
+    },
+
+    update_button: function(name) {
+      var self = this
+      self.elem.button.text(name)
     }
   })
 
@@ -348,34 +327,49 @@ bb.model.Item = Backbone.Model.extend(_.extend({
       _.bindAll(self)
 
       self.elem = {
-          
+        /*image_btn: $('#capture_image'),
+        video_btn: $('#capture_video'),        
+        audio_btn: $('#capture_audio'),
+        image_play: $('#capture_image_play'),
+        video_play: $('#capture_video_play'),        
+        audio_play: $('#capture_audio_play'), */       
       }
+/*
+      self.elem.image_btn.tap(function(){
+        navigator.device.capture.captureImage(function(mediafiles){
+          self.elem.image_play.attr({src:'file://'+mediafiles[0].fullPath})
+          app.model.state.trigger('scroll-refresh')
+        },app.erroralert)
+      })
 
+      self.elem.video_btn.tap(function(){
+        navigator.device.capture.captureVideo(function(mediafiles){
+          self.elem.video_play.show().attr({href:'file://'+mediafiles[0].fullPath})
+          app.model.state.trigger('scroll-refresh')
+        },app.erroralert)
+      })
+
+      self.elem.audio_btn.tap(function(){
+        navigator.device.capture.captureAudio(function(mediafiles){
+          self.elem.audio_play.show().attr({href:'file://'+mediafiles[0].fullPath})
+          app.model.state.trigger('scroll-refresh')
+        },app.erroralert)
+      })
+*/
     },
     render: function() {
     }
   })
 
   bb.view.Status = Backbone.View.extend({
-    initialize: function(lists) {
+    initialize: function() {
       var self = this
       _.bindAll(self)
-	self.lists = lists
-	self.setElement('#content_status')
-	
+
       self.elem = {
-		  title: self.$el.find('#heading2')  
       }
     },
     render: function() {
-		var self = this
-		var list = new bb.model.List({
-       listtext: "General List"
-      }) 
-		list = self.lists.get(app.model.state.get('currentlist'))  
-         
-		self.elem.title.html("Upload photos for " + list.get("listtext") + " station")
-	  
     }
   })
 
@@ -394,30 +388,21 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   bb.view.List = Backbone.View.extend(_.extend({ 
   
 
-    initialize: function( items, lists ) {
+    initialize: function( items ) {
       var self = this
       _.bindAll(self)
-	  self.lists = lists
-      self.setElement('#content_capture')
+
+      self.setElement('#todolist')
     
-      self.elem = {
-		  
-		  title: self.$el.find('#heading'),
-		  services: self.$el.find('#timetablecontent')
-	  }
-	  
-	  self.tm = {
-        item: _.template( self.$el.html() ),
-		title: _.template( self.elem.title.html() )
-		
+      self.tm = {
+        item: _.template( self.$el.html() )
       }
-	  
+
 
       self.items = items
       self.items.on('add',self.appenditem)
 	   self.items.on('change',self.render)
 	   self.items.on('destroy',self.render)
-	   app.model.state.on('change:currentlist',self.render)
 	   
 	  //app.model.state.on('change:items',self.render)
     
@@ -426,27 +411,8 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 
     render: function() {
       var self = this
-	  self.elem.services.empty()
-	   var list = new bb.model.List({
-       listtext: "General List"
-      }) 
-		  
-		list = self.lists.get(app.model.state.get('currentlist'))  
-        self.elem.title.html( self.tm.title({
-       title:  list.get("listtext") 
-     }) )
      
-      
-	  
-	  var title = new bb.model.Item({
-        destination: "Destination", route: "Route", time: "Time", swipeon : true
-      })
-      //self.$el.empty()
-	   var listv = new bb.view.Item({
-        model: title
-      })
-
-      self.elem.services.append( listv.$el ) 
+      self.$el.empty()
 
       self.items.each(function(item){
 		  
@@ -488,7 +454,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 			model: item
      		 })
 
-      		self.elem.services.append( itemview.$el )      
+      		self.$el.append( itemview.$el )      
       		self.scroll()
 		}
 
@@ -527,16 +493,9 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 
     render: function() {
       var self = this
-	  var title = new bb.model.List({
-        listtext: "Stations", swipeon : true
-      })
-      self.$el.empty()
-	   var listv = new bb.view.Listitem({
-        model: title
-      })
 
-      self.$el.append( listv.$el ) 
-	  
+      self.$el.empty()
+
       self.lists.each(function(list){
         self.appendlist(list)
       })
@@ -575,9 +534,9 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   //el: $("#todolist"),
  
   events: {
-     //'tap': 'toggledone',
-	 //'tap #delete_tm' : 'deleteitem',
-	 //'swipe' : 'showdelete'
+     'tap': 'toggledone',
+	 'tap #delete_tm' : 'deleteitem',
+	 'swipe' : 'showdelete'
   },
 	
 	toggledone: function() {
@@ -632,8 +591,8 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   
   events: {
     
-	 //'tap #delete_tm' : 'deleteitem',
-	// 'swipe' : 'showdelete',
+	 'tap #delete_tm' : 'deleteitem',
+	 'swipe' : 'showdelete',
 	 'tap' : 'changelist'
   },
 	
@@ -660,14 +619,12 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 	
 	changelist: function() {
 		var self = this
-		if(self.model.get('listtext') != 'Stations')
-		{
 		app.model.state.set({currentlist: self.model.get('id')})
-		
+	
 	  //app.view.head.cancelselected()
 	  app.view.todolist.render()
 	  app.model.state.set({current:"capture"})
-		}
+		
 	
 	}
 	
@@ -702,123 +659,33 @@ bb.model.Item = Backbone.Model.extend(_.extend({
 	
   }))
   
-  bb.view.PhotoList = Backbone.View.extend(_.extend({ 
   
-
-    initialize: function( photos, lists ) {
+/*
+  bb.view.PhoneGap = Backbone.View.extend({
+    initialize: function() {
       var self = this
       _.bindAll(self)
-	 
-	  self.lists = lists
-      self.setElement('#content_storage')
-    
-      
-	  self.elem = {
-        check: self.$el.find('span.check'),
-		text: self.$el.find('text.check'),
-		title: self.$el.find('#heading3'),
-		pictures: self.$el.find('#photolist')    
-	  }
-	  
-	  self.tm = {
-        photo: _.template( self.$el.html() )
+
+      self.elem = {
+        name: $('#phonegap_name'),
+	phonegap: $('#phonegap_phonegap'),
+	platform: $('#phonegap_platform'),
+	uuid: $('#phonegap_uuid'),
+	version: $('#phonegap_version'),
       }
-
-      self.photos = photos
-      self.photos.on('add',self.appendlist)
-	   self.photos.on('change',self.render)
-	   self.photos.on('destroy',self.render)
-	  
-	  app.model.state.on('change:photos',self.render)
-	  app.model.state.on('change:currentlist',self.render)
-     
-    },
-
-
-    render: function() {
-      var self = this
-	 self.elem.pictures.empty()
-		var list = new bb.model.List({
-       listtext: "General List"
-      }) 
-		list = self.lists.get(app.model.state.get('currentlist'))  
-         
-		self.elem.title.html("Photos for " + list.get("listtext") + " station")
-	  
-	 // self.elem.pictures.empty()
-	  
-      self.photos.each(function(photo){
-        self.appendlist(photo)
-      })
-	  if(true)
-	{
-	  
-	  var size = '12pt'
-      $(".text").css( {'font-size': size})
-	}
-    },
-
-
-    appendlist: function(photo) {
-     
-	var self = this
-
-      
-	  
-	  if(photo.get('station') == app.model.state.get('currentlist'))
-		//if(item.get('listid') == "50ca29ec5999cdb701000001")
-		//if(true)
-		{
-      		
-      var photoview = new bb.view.Photo({
-        model: photo
-      })
-
-      self.elem.pictures.append( photoview.$el )      
-      self.scroll()
-		}
-
-    }
-	
-	
-	
-  },scrollPhotoContent))
-  
-  bb.view.Photo = Backbone.View.extend(_.extend({    
-  
-  events: {
-   
-  },
-
-	
-	initialize: function() {
-      var self = this
-      _.bindAll(self)
-      self.render()
-	  
-	 
-	 app.model.state.on('change:photo',self.render) 
-
     },
 
     render: function() {
       var self = this
-      var html = self.tm.item( self.model.toJSON())
-      self.$el.append( html ) 
-	 
-    }
 
-  },{
-    tm: {
-      item: _.template( $('#photolist').html() ),
-	  
+      self.elem.name.txt(device.name)
+      self.elem.phonegap.txt(device.phonegap)
+      self.elem.platform.txt(device.platform)
+      self.elem.uuid.txt(device.uuid)
+      self.elem.version.txt(device.version)
     }
-	
-	
-	
-  }))
-  
-
+  })
+*/
 }
 
 
@@ -862,55 +729,36 @@ app.init = function() {
   app.model.state = new bb.model.State()
   app.model.items = new bb.model.Items()
   app.model.lists = new bb.model.Lists()
-  app.model.photos = new bb.model.Photos()
 
   app.view.navigation = new bb.view.Navigation(app.initialtab)
-  //app.view.navigation.render()
+  app.view.navigation.render()
 
   app.view.content = new bb.view.Content(app.initialtab)
-  //app.view.content.render()
+  app.view.content.render()
   
-  app.view.todolist = new bb.view.List(app.model.items, app.model.lists)
-  //app.view.todolist.render()
+  app.view.todolist = new bb.view.List(app.model.items)
+  app.view.todolist.render()
   
   app.view.alllist = new bb.view.ListofLists(app.model.lists)
-  //app.view.alllist.render()
-  
-  app.view.photolist = new bb.view.PhotoList(app.model.photos, app.model.lists)
-  //app.view.photolist.render()
+  app.view.alllist.render()
 
   app.view.sense    = new bb.view.Sense()
   app.view.capture  = new bb.view.Capture()
-  app.view.status   = new bb.view.Status(app.model.lists)
+  app.view.status   = new bb.view.Status()
   app.view.storage  = new bb.view.Storage()
   <!--app.view.phonegap = new bb.view.PhoneGap()-->
   
  app.model.items.fetch( {
     success: function() {
-	//app.view.todolist.render()
+	app.view.todolist.render()
       // simulate network delay
       
     }
   })
   
   app.model.lists.fetch( {
-    success: function(lists) {
-	self.lists = lists
-	var list = self.lists.at(0) 
-        
-	app.model.state.set({currentlist: list.get('id')})
-	app.view.navigation.render()
-	app.view.content.render()
-	app.view.alllist.render()	
-    app.view.todolist.render()
-	app.view.photolist.render()
-	
-    }
-  })
-  
-  app.model.photos.fetch( {
     success: function() {
-	//app.view.photolist.render()	
+	app.view.alllist.render()	
     
     }
   })
