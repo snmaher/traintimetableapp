@@ -119,7 +119,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
   bb.model.Items = Backbone.Collection.extend(_.extend({    
     model: bb.model.Item,
    // localStorage: new Store("items"),
- 	url: 'http://ec2-79-125-47-67.eu-west-1.compute.amazonaws.com/api/rest/todo',
+ 	url: 'http://ec2-79-125-47-67.eu-west-1.compute.amazonaws.com/api/rest/service',
 	
     initialize: function() {
       var self = this
@@ -172,7 +172,7 @@ bb.model.Item = Backbone.Model.extend(_.extend({
    bb.model.Lists = Backbone.Collection.extend(_.extend({    
     model: bb.model.List,
    // localStorage: new Store("lists")
-   url: 'http://ec2-79-125-47-67.eu-west-1.compute.amazonaws.com/api/rest/list'
+   url: 'http://ec2-79-125-47-67.eu-west-1.compute.amazonaws.com/api/rest/station'
 	,
 
     initialize: function() {
